@@ -81,7 +81,7 @@ body, html {
     z-index: -1;
 }
 .tab-top {
-    top: 20px;
+    top: -20px;
     width: 60px;
     height: 16px;
     border-bottom: none;
