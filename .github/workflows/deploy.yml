@@ -50,3 +50,9 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           # Push all tags for this repository
           docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
+
+      - name: Deploy Frontend to S3
+        working-directory: ./terraform
+        run: |
+          FRONTEND_BUCKET=$(terraform output -raw s3_bucket_name)
+          aws s3 sync ../frontend s3://$FRONTEND_BUCKET/ --delete
