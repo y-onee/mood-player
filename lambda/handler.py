@@ -33,7 +33,7 @@ def cors_response(status, body):
 
 def fetch_all_songs():
     response = table.scan(
-        ProjectionExpression="song_id, title, artist, album, #yr, moods, energy, #lang",
+        ProjectionExpression="song_id, title, artist, album, #yr, moods, energy, #lang, video_id, thumbnail",
         ExpressionAttributeNames={
             "#yr":   "year",
             "#lang": "language",
@@ -87,22 +87,6 @@ def call_bedrock(prompt):
     return json.loads(text)
 
 
-def get_youtube_data(title, artist):
-    """Calls EC2 Flask server to search YouTube."""
-    query = f"{title} {artist} BTS official"
-    try:
-        res  = requests.get(
-            f"{EC2_FLASK_URL}/youtube-search",
-            params={"query": query},
-            timeout=10
-        )
-        data = res.json()
-        return data.get("videoId"), data.get("thumbnail")
-    except Exception as e:
-        logger.error("EC2 YouTube search failed: %s", str(e))
-        return None, None
-
-
 def enrich_with_youtube(picks, all_songs):
     songs_map = {s["song_id"]: s for s in all_songs}
     results   = []
@@ -113,7 +97,8 @@ def enrich_with_youtube(picks, all_songs):
         title    = pick.get("title", metadata.get("title", ""))
         artist   = pick.get("artist", metadata.get("artist", ""))
 
-        video_id, thumbnail = get_youtube_data(title, artist)
+        video_id  = metadata.get("video_id")
+        thumbnail = metadata.get("thumbnail")
 
         results.append({
             "song_id":     song_id,
