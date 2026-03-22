@@ -1,0 +1,62 @@
+# Terraform
+terraform.tfvars
+*.tfvars
+**/.terraform/*
+*.tfstate
+*.tfstate.backup
+terraform/lambdas/*.zip
+terraform/*.zip
+terraform/.terraform/**
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/lambdas/*.zip
+terraform/*.zip
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/lambda.zip
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.tfstate.lock.info
+
+# Lambda dependencies
+lambda/bin/
+lambda/lib/
+lambda/lib64/
+lambda/*.dist-info/
+lambda/__pycache__/
+lambda/requests/
+lambda/requests_toolbelt/
+lambda/urllib3/
+lambda/certifi/
+lambda/charset_normalizer/
+lambda/idna/
+
+# Secrets
+terraform/terraform.tfvars
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Mac
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ML files
+*.csv
+*.zip
+
+# Node
+node_modules/
+.expo/
+
+# Environment
+.env
+*.env
