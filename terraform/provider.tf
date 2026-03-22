@@ -8,7 +8,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "mood-player-tf-state-700903221181"
+    bucket = "mood-player-tf-bucket-700903221181"
     key    = "terraform.tfstate"
     region = "us-east-1"
   }
