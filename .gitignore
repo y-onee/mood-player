@@ -57,6 +57,9 @@ __pycache__/
 node_modules/
 .expo/
 
+# Desktop Packaged App
+desktop/dist/
+
 # Environment
 .env
 *.env

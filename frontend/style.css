@@ -7,7 +7,7 @@
 body, html {
     width: 100%;
     height: 100%;
-    font-family: 'VT323', monospace;
+    font-family: 'Quicksand', sans-serif;
     overflow: hidden;
 }
 
@@ -15,19 +15,18 @@ body, html {
     position: relative;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, #cda1d3 0%, #f7b4ce 50%, #ffebd9 100%);
+    background: #FFD4DF;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Background elements */
-.moon {
+.clouds, .stars, .moon {
     position: absolute;
-    top: 10%;
-    left: 45%;
-    font-size: 2rem;
-    opacity: 0.8;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .cassette-wrapper {
@@ -35,131 +34,212 @@ body, html {
     flex-direction: column;
     align-items: center;
     z-index: 10;
+    perspective: 1500px;
 }
 
 .cassette {
     position: relative;
-    width: 500px;
-    height: 320px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 3px solid rgba(255, 255, 255, 0.4);
+    width: 540px;
+    height: 350px;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.cassette.flipped {
+    transform: rotateY(180deg);
+}
+
+.cassette-face {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #F295A7;
+    border: 4px solid #C46779;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: 0 10px 25px rgba(196, 103, 121, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.4);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
-/* Screws */
+.cassette-front {
+    transform: rotateY(0deg) translateZ(1px);
+}
+
+.cassette-back {
+    transform: rotateY(180deg) translateZ(1px);
+    justify-content: center;
+    pointer-events: auto;
+}
+
+.cassette-tab {
+    position: absolute;
+    background: #F295A7;
+    border: 4px solid #C46779;
+    z-index: -1;
+}
+.tab-top {
+    top: -12px;
+    width: 60px;
+    height: 16px;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+}
+.tab-top.tab-left { left: 80px; }
+.tab-top.tab-right { right: 80px; }
+
+.tab-side {
+    bottom: 40px;
+    width: 14px;
+    height: 35px;
+}
+.tab-side.tab-left {
+    left: -12px;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+}
+.tab-side.tab-right {
+    right: -12px;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+
 .screw {
     position: absolute;
-    font-size: 1.2rem;
-    color: rgba(255,255,255,0.7);
-    line-height: 1;
+    width: 18px;
+    height: 18px;
+    background: #E8859A;
+    border: 2px solid #C46779;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 20;
+}
+
+.screw .dot {
+    width: 4px;
+    height: 4px;
+    background: #C46779;
+    border-radius: 50%;
 }
 .tl { top: 15px; left: 15px; }
 .tr { top: 15px; right: 15px; }
 .bl { bottom: 15px; left: 15px; }
 .br { bottom: 15px; right: 15px; }
 
-/* Sakura Ornaments */
-.sakura {
-    position: absolute;
-    font-size: 2.5rem;
-    filter: drop-shadow(0px 2px 5px rgba(255, 105, 180, 0.4));
-    opacity: 0.9;
-    z-index: 5;
-    pointer-events: none;
-}
-.cherry-1 { top: -15px; left: -10px; transform: rotate(15deg); font-size: 3rem; }
-.cherry-2 { top: 20px; left: 60px; transform: rotate(-10deg); font-size: 2rem; }
-.cherry-3 { top: -5px; right: 40px; transform: rotate(45deg); font-size: 2.5rem; }
-.cherry-4 { top: 80px; right: -15px; transform: rotate(-25deg); font-size: 3.5rem; }
-.cherry-5 { bottom: 30px; right: 20px; transform: rotate(10deg); font-size: 2rem; }
-
-/* Label Area */
 .label-area {
     position: relative;
-    width: 90%;
-    height: 200px;
-    background: rgba(255, 230, 240, 0.85);
-    border-radius: 10px;
+    width: 92%;
+    height: 220px;
+    background: rgba(255, 243, 230, 0.85);
+    border: 3px solid #C46779;
+    border-radius: 30px 30px 10px 10px;
+    corner-shape: superellipse(0);
     margin-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     padding: 15px;
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+    z-index: 2;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
 }
+
+.decor {
+    position: absolute;
+    font-size: 2.5rem;
+    filter: drop-shadow(1px 2px 2px rgba(196, 103, 121, 0.3));
+    z-index: 5;
+    pointer-events: none;
+}
+.top-right { top: -20px; right: -15px; transform: rotate(15deg); font-size: 3rem; }
+.bottom-left { bottom: 20px; left: -25px; transform: rotate(-20deg); font-size: 2.5rem; }
 
 .brand {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     letter-spacing: 2px;
-    color: #333;
+    color: #C46779;
     font-weight: bold;
     text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
-    background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-    -webkit-background-clip: text;
-    color: transparent;
-    -webkit-text-stroke: 1px #a65c85;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.sub-brand {
+    font-size: 1rem;
+    color: #C46779;
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(196, 103, 121, 0.3);
+    padding-bottom: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-/* Tape Window */
 .tape-window {
-    width: 320px;
-    height: 90px;
-    background: #2a2a2a;
-    border-radius: 45px;
-    border: 4px solid rgba(255,255,255,0.5);
+    width: 340px;
+    height: 65px;
+    background: rgba(242, 149, 167, 0.3);
+    border-radius: 35px;
+    border: 3px solid #C46779;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 25px;
+    padding: 0 15px;
     position: relative;
-    box-shadow: inset 0 5px 15px rgba(0,0,0,0.8);
     overflow: hidden;
+    box-shadow: inset 0 3px 8px rgba(196, 103, 121, 0.4);
+    margin-bottom: 15px;
 }
 
-.magnetic-tape {
+.magnetic-tape-bg {
     position: absolute;
-    left: 20%;
-    right: 20%;
-    bottom: 0;
-    height: 30px;
-    background: #111;
+    top: 10px;
+    bottom: 10px;
+    left: 25%;
+    right: 25%;
+    background: #9D4357;
+    border-radius: 5px;
     z-index: 1;
+}
+.magnetic-tape-bridge {
+    position: absolute;
+    height: 100%;
+    width: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 243, 230, 0.6);
+    z-index: 2;
 }
 
 .reel-container {
     display: flex;
     width: 100%;
     justify-content: space-between;
-    z-index: 2;
+    z-index: 3;
 }
 
 .reel {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background: #e0e0e0;
-    border: 10px solid #dcdcdc;
-    box-shadow: 0 0 0 10px #444, inset 0 0 10px rgba(0,0,0,0.5);
+    background: #FFF;
+    border: 6px solid #FFD4DF;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 0 0 4px #C46779;
 }
 
 .hub {
-    width: 20px;
-    height: 20px;
-    background: #fff;
+    width: 16px;
+    height: 16px;
+    background: #FFD4DF;
     border-radius: 50%;
-    border: 2px solid #ccc;
     z-index: 10;
 }
 
@@ -175,14 +255,16 @@ body, html {
     left: 50%;
     width: 4px;
     height: 100%;
-    background: #ccc;
+    background: #FFD4DF;
     transform-origin: center;
     margin-left: -2px;
 }
+.rot30 { transform: rotate(30deg); }
 .rot60 { transform: rotate(60deg); }
+.rot90 { transform: rotate(90deg); }
 .rot120 { transform: rotate(120deg); }
+.rot150 { transform: rotate(150deg); }
 
-/* Animation class */
 .playing .reel {
     animation: spin 3s linear infinite;
 }
@@ -191,49 +273,82 @@ body, html {
     100% { transform: rotate(360deg); }
 }
 
-/* Form and Input */
 #mood-form {
     width: 100%;
     display: flex;
     justify-content: center;
-    background: rgba(255,182,193, 0.4);
-    border-radius: 5px;
-    padding: 5px;
+    z-index: 10;
 }
 
 #mood-input {
     background: transparent;
     border: none;
-    border-bottom: 2px dashed #b9769a;
-    width: 90%;
-    font-family: 'Caveat', cursive;
-    font-size: 1.8rem;
-    color: #b9769a;
+    border-bottom: 2px dashed #C46779;
+    width: 80%;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #C46779;
     text-align: center;
     outline: none;
 }
 #mood-input::placeholder {
-    color: rgba(185, 118, 154, 0.6);
+    color: rgba(196, 103, 121, 0.5);
 }
 
-/* Cassette Bottom Bridge */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 10;
+}
+.retro-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 2px 4px rgba(166, 92, 133, 0.4);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    width: 40px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.retro-btn:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
+.retro-btn:active {
+    transform: scale(0.9);
+}
+
 .cassette-bottom {
     position: absolute;
     bottom: 0;
-    width: 70%;
-    height: 40px;
-    background: rgba(255,255,255,0.2);
-    border-top: 1px solid rgba(255,255,255,0.5);
-    border-radius: 5px 5px 15px 15px;
+    width: 75%;
+    height: 60px;
+    background: rgba(232, 133, 154, 0.4);
+    border: 3px solid #C46779;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
 }
 
+.decor-bottom {
+    position: absolute;
+    top: -15px;
+    font-size: 2rem;
+    filter: drop-shadow(1px 2px 2px rgba(196, 103, 121, 0.3));
+}
+
 .hole {
-    width: 15px;
-    height: 15px;
-    background: rgba(0,0,0,0.2);
+    width: 14px;
+    height: 14px;
+    background: #C46779;
     border-radius: 50%;
     box-shadow: inset 1px 1px 3px rgba(0,0,0,0.5);
 }
@@ -248,8 +363,9 @@ body, html {
 
 #loading {
     margin-top: 20px;
-    color: #8c4a6f;
-    font-size: 1.4rem;
+    color: #C46779;
+    font-weight: bold;
+    font-size: 1.2rem;
     animation: pulse 1s infinite alternate;
 }
 @keyframes pulse {
@@ -257,33 +373,17 @@ body, html {
     100% { opacity: 1; }
 }
 
-/* Player Modal */
-#player-modal {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 40%;
-    background: rgba(255, 230, 240, 0.95);
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+.back-label {
+    height: 85%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    transition: transform 0.5s ease-out;
-    z-index: 100;
+    pointer-events: auto;
 }
 
-#close-btn {
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #a65c85;
-    cursor: pointer;
+.label-area, .cassette-bottom {
+    cursor: auto;
 }
 
 #youtube-embed {
@@ -297,37 +397,40 @@ body, html {
 .playlist-container {
     width: 80%;
     max-width: 600px;
-    margin-top: 20px;
-    color: #333;
+    margin-top: 10px;
+    color: #C46779;
 }
 .playlist-container h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin-bottom: 10px;
-    color: #a65c85;
+    border-bottom: 2px solid rgba(196, 103, 121, 0.3);
+    padding-bottom: 5px;
 }
 #playlist {
     list-style: none;
     max-height: 150px;
     overflow-y: auto;
+    pointer-events: auto;
 }
 #playlist li {
     padding: 10px;
-    border-bottom: 1px dashed #e3aec6;
+    border-bottom: 1px dashed rgba(196, 103, 121, 0.3);
     display: flex;
     flex-direction: column;
     cursor: pointer;
     transition: background 0.2s;
+    pointer-events: auto;
 }
 #playlist li:hover {
     background: rgba(255, 255, 255, 0.5);
 }
 #playlist li .title {
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 #playlist li .reason {
     font-family: sans-serif;
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 0.85rem;
+    color: #9D4357;
     margin-top: 5px;
 }

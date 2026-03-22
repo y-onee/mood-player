@@ -5,81 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mood Cassette</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f7b4ce">
+    <meta name="theme-color" content="#F295A7">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&family=Varela+Round&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Deep Link Auto-Launcher -->
+    <script>
+        // When visiting the website, automatically prompt the OS to open the Desktop App
+        window.onload = () => {
+            window.location.href = 'moodplayer://launch';
+        };
+    </script>
+
     <div class="sky">
-        <div class="clouds"></div>
-        <div class="stars"></div>
-        <div class="moon">🌙</div>
-
         <div class="cassette-wrapper">
-            <div class="cassette">
-                <!-- Screws -->
-                <div class="screw tl">○</div>
-                <div class="screw tr">○</div>
-                <div class="screw bl">○</div>
-                <div class="screw br">○</div>
+            <div class="cassette" id="cassette">
+                <div class="cassette-face cassette-front">
+                    <div class="cassette-tab tab-top tab-left"></div>
+                    <div class="cassette-tab tab-top tab-right"></div>
+                    <div class="cassette-tab tab-side tab-left"></div>
+                    <div class="cassette-tab tab-side tab-right"></div>
 
-                <!-- Label Area -->
-                <div class="label-area">
-                    <div class="brand">WAGBA MUSIC</div>
-                    
-                    <div class="tape-window">
-                        <div class="magnetic-tape"></div>
-                        <div class="reel-container">
-                            <div class="reel reel-left">
-                                <div class="hub"></div>
-                                <div class="spokes">
-                                    <div class="spoke"></div>
-                                    <div class="spoke rot60"></div>
-                                    <div class="spoke rot120"></div>
+                    <div class="screw tl"><div class="dot"></div></div>
+                    <div class="screw tr"><div class="dot"></div></div>
+                    <div class="screw bl"><div class="dot"></div></div>
+                    <div class="screw br"><div class="dot"></div></div>
+
+                    <div class="label-area">
+                        <img src="icon.png" class="hidden-preload" style="display:none;" alt="preload">
+                        <div class="brand">WAGBA MUSIC</div>
+                        <div class="sub-brand">Aesthetic Lo-Fi</div>
+
+                        <div class="tape-window">
+                            <div class="magnetic-tape-bg"></div>
+                            <div class="magnetic-tape-bridge"></div>
+                            
+                            <div class="reel-container">
+                                <div class="reel reel-left">
+                                    <div class="hub"></div>
+                                    <div class="spokes">
+                                        <div class="spoke"></div><div class="spoke rot30"></div><div class="spoke rot60"></div><div class="spoke rot90"></div><div class="spoke rot120"></div><div class="spoke rot150"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="reel reel-right">
-                                <div class="hub"></div>
-                                <div class="spokes">
-                                    <div class="spoke"></div>
-                                    <div class="spoke rot60"></div>
-                                    <div class="spoke rot120"></div>
+                                <div class="reel reel-right">
+                                    <div class="hub"></div>
+                                    <div class="spokes">
+                                        <div class="spoke"></div><div class="spoke rot30"></div><div class="spoke rot60"></div><div class="spoke rot90"></div><div class="spoke rot120"></div><div class="spoke rot150"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <form id="mood-form">
+                            <input type="text" id="mood-input" placeholder="Type your mood..." autocomplete="off" required>
+                        </form>
                     </div>
 
-                    <form id="mood-form">
-                        <input type="text" id="mood-input" placeholder="MY BEST..." autocomplete="off" required>
-                    </form>
+                    <div class="cassette-bottom">
+                        <div class="controls" id="player-controls">
+                            <button id="btn-prev" class="retro-btn" title="Previous Track">⏮</button>
+                            <button id="btn-play-pause" class="retro-btn" title="Play/Pause">⏸</button>
+                            <button id="btn-next" class="retro-btn" title="Next Track">⏭</button>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- Sakura Decorations -->
-                <div class="sakura cherry-1">🌸</div>
-                <div class="sakura cherry-2">🌸</div>
-                <div class="sakura cherry-3">🌸</div>
-                <div class="sakura cherry-4">🌸</div>
-                <div class="sakura cherry-5">🌸</div>
 
-                <div class="cassette-bottom">
-                    <div class="hole"></div>
-                    <div class="hole small"></div>
-                    <div class="hole"></div>
-                    <div class="hole small"></div>
-                    <div class="hole"></div>
+                <div class="cassette-face cassette-back">
+                    <div class="cassette-tab tab-top tab-left"></div>
+                    <div class="cassette-tab tab-top tab-right"></div>
+                    <div class="cassette-tab tab-side tab-left"></div>
+                    <div class="cassette-tab tab-side tab-right"></div>
+
+                    <div class="screw tl"><div class="dot"></div></div>
+                    <div class="screw tr"><div class="dot"></div></div>
+                    <div class="screw bl"><div class="dot"></div></div>
+                    <div class="screw br"><div class="dot"></div></div>
+
+                    <div class="label-area back-label">
+                        <div id="youtube-embed"></div>
+                        <div class="playlist-container">
+                            <ul id="playlist"></ul>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="loading" class="hidden">Winding tape...</div>
-        </div>
-
-        <div id="player-modal" class="hidden">
-            <button id="close-btn">✖</button>
-            <div id="youtube-embed"></div>
-            <div class="playlist-container">
-                <h3>Vibe Queue</h3>
-                <ul id="playlist"></ul>
-            </div>
         </div>
     </div>
     <script src="https://www.youtube.com/iframe_api"></script>

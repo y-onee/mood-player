@@ -20,9 +20,30 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
+    const playPauseBtn = document.getElementById('btn-play-pause');
+    if (event.data === YT.PlayerState.PLAYING) {
+        if(playPauseBtn) playPauseBtn.textContent = '⏸';
+        document.querySelector('.cassette-front').classList.add('playing');
+        document.querySelector('.cassette-back').classList.add('playing');
+    } else if (event.data === YT.PlayerState.PAUSED) {
+        if(playPauseBtn) playPauseBtn.textContent = '⏵';
+        document.querySelector('.cassette-front').classList.remove('playing');
+        document.querySelector('.cassette-back').classList.remove('playing');
+    } else if (event.data === YT.PlayerState.ENDED) {
         playNextSong();
     }
+}
+
+function highlightCurrentSong() {
+    const listItems = document.querySelectorAll('#playlist li');
+    listItems.forEach((li, index) => {
+        if (index === currentIndex) {
+            li.style.background = 'rgba(255, 255, 255, 0.8)';
+            li.style.borderRadius = '5px';
+        } else {
+            li.style.background = 'transparent';
+        }
+    });
 }
 
 function playNextSong() {
@@ -30,8 +51,10 @@ function playNextSong() {
     if (currentIndex < currentPlaylist.length) {
         const videoId = currentPlaylist[currentIndex].video_id;
         if(videoId) ytPlayer.loadVideoById(videoId);
+        highlightCurrentSong();
     } else {
-        document.querySelector('.cassette').classList.remove('playing');
+        document.querySelector('.cassette-front').classList.remove('playing');
+        document.querySelector('.cassette-back').classList.remove('playing');
     }
 }
 
@@ -39,24 +62,59 @@ function playSong(index) {
     currentIndex = index;
     const videoId = currentPlaylist[currentIndex].video_id;
     if(videoId) ytPlayer.loadVideoById(videoId);
-    document.querySelector('.cassette').classList.add('playing');
+    document.querySelector('.cassette-front').classList.add('playing');
+    document.querySelector('.cassette-back').classList.add('playing');
+    highlightCurrentSong();
 }
 
 const form = document.getElementById('mood-form');
 const input = document.getElementById('mood-input');
 const loading = document.getElementById('loading');
-const cassetteElement = document.querySelector('.cassette');
-const playerModal = document.getElementById('player-modal');
+const cassetteElement = document.getElementById('cassette');
 const playlistEl = document.getElementById('playlist');
-const closeBtn = document.getElementById('close-btn');
+
+const screws = document.querySelectorAll('.screw');
+screws.forEach(screw => {
+    screw.addEventListener('click', () => {
+        cassetteElement.classList.toggle('flipped');
+    });
+});
+
+const btnPrev = document.getElementById('btn-prev');
+const btnPlayPause = document.getElementById('btn-play-pause');
+const btnNext = document.getElementById('btn-next');
+const playerControls = document.getElementById('player-controls');
+
+if(btnPrev) {
+    btnPrev.addEventListener('click', () => {
+        if (currentIndex > 0) playSong(currentIndex - 1);
+    });
+}
+if(btnNext) {
+    btnNext.addEventListener('click', () => {
+        if (currentIndex < currentPlaylist.length - 1) playSong(currentIndex + 1);
+    });
+}
+if(btnPlayPause) {
+    btnPlayPause.addEventListener('click', () => {
+        if (!ytPlayer || !ytPlayer.getPlayerState) return;
+        const state = ytPlayer.getPlayerState();
+        if (state === YT.PlayerState.PLAYING) {
+            ytPlayer.pauseVideo();
+        } else {
+            ytPlayer.playVideo();
+        }
+    });
+}
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const mood = input.value.trim();
     if (!mood) return;
 
-    input.blur(); // Hide keyboard on mobile
-    cassetteElement.classList.add('playing');
+    input.blur();
+    document.querySelector('.cassette-front').classList.add('playing');
+    document.querySelector('.cassette-back').classList.add('playing');
     loading.classList.remove('hidden');
 
     try {
@@ -75,21 +133,22 @@ form.addEventListener('submit', async (e) => {
         
         if (currentPlaylist.length > 0) {
             renderPlaylist();
-            playerModal.classList.remove('hidden');
+            cassetteElement.classList.add('flipped');
             if(ytPlayer && ytPlayer.loadVideoById) {
                 playSong(0);
             } else {
-                // If API isn't ready yet
                 setTimeout(() => playSong(0), 1000);
             }
         } else {
             alert("This mood is too complex! No songs found.");
-            cassetteElement.classList.remove('playing');
+            document.querySelector('.cassette-front').classList.remove('playing');
+            document.querySelector('.cassette-back').classList.remove('playing');
         }
     } catch (err) {
         console.error(err);
         alert("The tape got jammed. (Backend API Error)");
-        cassetteElement.classList.remove('playing');
+        document.querySelector('.cassette-front').classList.remove('playing');
+        document.querySelector('.cassette-back').classList.remove('playing');
     } finally {
         loading.classList.add('hidden');
     }
@@ -112,15 +171,6 @@ function renderPlaylist() {
     });
 }
 
-closeBtn.addEventListener('click', () => {
-    playerModal.classList.add('hidden');
-    cassetteElement.classList.remove('playing');
-    if (ytPlayer && ytPlayer.pauseVideo) {
-        ytPlayer.pauseVideo();
-    }
-});
-
-// Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch(err => {
