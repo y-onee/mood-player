@@ -15,22 +15,20 @@
     <script>
         // When visiting the website, automatically prompt the OS to open the Desktop App
         window.onload = () => {
-            // If the user explicitly clicked the fallback button, keep them in the browser!
+            // Prevent the Desktop App from launching itself!
+            if (navigator.userAgent.toLowerCase().includes('electron')) return;
+
+            // If the user explicitly clicked the fallback button, keep them in the browser
             if (window.location.search.includes('web=true')) return;
 
+            // Trigger the OS deep-link
             window.location.href = 'moodplayer://launch';
             
-            // Attempt to forcefully close the browser tab after launching
+            // Replace the UI to say the app has been launched!
             setTimeout(() => {
-                window.opener = null;
-                window.open('', '_self');
-                window.close();
-                
-                // If modern browser security blocks the tab from auto-closing, gracefully replace the UI!
                 document.body.innerHTML = `
                     <div style="display:flex; height:100vh; align-items:center; justify-content:center; flex-direction:column; background:#FFD4DF; font-family:'Quicksand', sans-serif; color:#C46779;">
                         <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Cassette is playing on your Desktop!</h1>
-                        <p style="font-size: 1.2rem;">You can safely close this browser tab.</p>
                         <button onclick="window.location.href='?web=true'" style="margin-top:30px; padding:15px 30px; border:none; border-radius:15px; background:#C46779; color:white; cursor:pointer; font-family:'Quicksand', sans-serif; font-size:1.1rem; font-weight:bold; box-shadow: 0 4px 10px rgba(196,103,121,0.4);">
                             Click here to use the Web Version instead
                         </button>

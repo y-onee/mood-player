@@ -114,6 +114,9 @@ def enrich_with_youtube(picks, all_songs):
         artist   = pick.get("artist", metadata.get("artist", ""))
 
         video_id, thumbnail = get_youtube_data(title, artist)
+        if not video_id:
+            video_id  = metadata.get("video_id")
+            thumbnail = metadata.get("thumbnail")
 
         results.append({
             "song_id":     song_id,

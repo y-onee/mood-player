@@ -23,6 +23,16 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
   }
 });
 
+// macOS deep link handler
+app.on('open-url', (event, url) => {
+  event.preventDefault();
+  const mainWindow = BrowserWindow.getAllWindows()[0];
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
+  }
+});
+
 function createWindow () {
   const win = new BrowserWindow({
     width: 600,
