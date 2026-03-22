@@ -59,6 +59,7 @@ node_modules/
 
 # Desktop Packaged App
 desktop/dist/
+desktop/Mood Player-darwin-*/
 
 # Environment
 .env
