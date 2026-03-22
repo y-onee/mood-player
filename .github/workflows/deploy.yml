@@ -60,3 +60,12 @@ jobs:
         run: |
           FRONTEND_BUCKET=$(terraform output -raw s3_bucket_name)
           aws s3 sync ../frontend s3://$FRONTEND_BUCKET/ --delete
+
+      - name: Print Frontend URL
+        working-directory: ./terraform
+        run: |
+          FRONTEND_URL=$(terraform output -raw cloudfront_url)
+          echo "========================================"
+          echo "Deployment successful!"
+          echo "Cassette UI is live at: $FRONTEND_URL"
+          echo "========================================"
