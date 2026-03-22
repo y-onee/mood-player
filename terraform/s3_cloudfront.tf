@@ -33,7 +33,7 @@ resource "aws_s3_bucket_website_configuration" "frontend" {
 
 # Bucket policy — allows anyone to read files (needed for a public website)
 resource "aws_s3_bucket_policy" "frontend" {
-  bucket = aws_s3_bucket.frontend.id
+  bucket     = aws_s3_bucket.frontend.id
   depends_on = [aws_s3_bucket_public_access_block.frontend]
 
   policy = jsonencode({
