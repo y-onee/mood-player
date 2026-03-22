@@ -81,7 +81,7 @@ body, html {
     z-index: -1;
 }
 .tab-top {
-    top: -12px;
+    top: 20px;
     width: 60px;
     height: 16px;
     border-bottom: none;
@@ -96,12 +96,12 @@ body, html {
     height: 35px;
 }
 .tab-side.tab-left {
-    left: -12px;
+    left: -18px;
     border-right: none;
     border-radius: 8px 0 0 8px;
 }
 .tab-side.tab-right {
-    right: -12px;
+    right: -18px;
     border-left: none;
     border-radius: 0 8px 8px 0;
 }
