@@ -69,3 +69,18 @@ jobs:
           echo "Deployment successful!"
           echo "Cassette UI is live at: $FRONTEND_URL"
           echo "========================================"
+
+      - name: Run Fargate Task
+        working-directory: ./terraform
+        run: |
+          CLUSTER=$(terraform output -raw ecs_cluster_name)
+          TASK_DEF=$(terraform output -raw ecs_task_definition)
+          SUBNET=$(terraform output -raw public_subnet_id)
+          SG=$(terraform output -raw fargate_sg_id)
+
+          echo "Triggering Fargate Task on cluster $CLUSTER"
+          aws ecs run-task \
+            --cluster $CLUSTER \
+            --task-definition $TASK_DEF \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SG],assignPublicIp=ENABLED}"

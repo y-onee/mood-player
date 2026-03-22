@@ -35,3 +35,11 @@ output "ecs_cluster_name" {
 output "ecs_task_definition" {
   value = aws_ecs_task_definition.youtube_prefetch.arn
 }
+
+output "public_subnet_id" {
+  value = aws_subnet.main.id
+}
+
+output "fargate_sg_id" {
+  value = aws_security_group.fargate_sg.id
+}
