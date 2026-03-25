@@ -11,33 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&family=Varela+Round&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Deep Link Auto-Launcher -->
-    <script>
-        // When visiting the website, automatically prompt the OS to open the Desktop App
-        window.onload = () => {
-            // Prevent the Desktop App from launching itself!
-            if (navigator.userAgent.toLowerCase().includes('electron')) return;
-
-            // If the user explicitly clicked the fallback button, keep them in the browser
-            if (window.location.search.includes('web=true')) return;
-
-            // Trigger the OS deep-link
-            window.location.href = 'moodplayer://launch';
-            
-            // Replace the UI to say the app has been launched!
-            setTimeout(() => {
-                document.body.innerHTML = `
-                    <div style="display:flex; height:100vh; align-items:center; justify-content:center; flex-direction:column; background:#FFD4DF; font-family:'Quicksand', sans-serif; color:#C46779;">
-                        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Cassette is playing on your Desktop!</h1>
-                        <button onclick="window.location.href='?web=true'" style="margin-top:30px; padding:15px 30px; border:none; border-radius:15px; background:#C46779; color:white; cursor:pointer; font-family:'Quicksand', sans-serif; font-size:1.1rem; font-weight:bold; box-shadow: 0 4px 10px rgba(196,103,121,0.4);">
-                            Click here to use the Web Version instead
-                        </button>
-                    </div>
-                `;
-            }, 1000);
-        };
-    </script>
-
     <div class="sky">
         <div class="cassette-wrapper">
             <div class="cassette" id="cassette">

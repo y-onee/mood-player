@@ -57,10 +57,6 @@ __pycache__/
 node_modules/
 .expo/
 
-# Desktop Packaged App
-desktop/dist/
-desktop/Mood Player-darwin-*/
-
 # Environment
 .env
 *.env
