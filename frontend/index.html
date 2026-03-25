@@ -12,78 +12,96 @@
 </head>
 <body>
     <div class="sky">
-        <div class="cassette-wrapper">
-            <div class="cassette" id="cassette">
-                <div class="cassette-face cassette-front">
-                    <div class="cassette-tab tab-top tab-left"></div>
-                    <div class="cassette-tab tab-top tab-right"></div>
-                    <div class="cassette-tab tab-side tab-left"></div>
-                    <div class="cassette-tab tab-side tab-right"></div>
+        <div class="app-shell">
+            <section class="radio-panel">
+                <div class="radio-panel-header">
+                    <div>
+                        <p class="radio-kicker">ARMY Radio</p>
+                        <h2>Live Stations</h2>
+                    </div>
+                    <div class="radio-pill" id="radio-connection-state">Connecting</div>
+                </div>
+                <p class="radio-summary"><span id="station-count">0</span> live stations right now</p>
+                <p class="radio-status-text" id="radio-status-text">Connecting to live radio...</p>
+                <button class="radio-leave hidden" id="leave-station-btn" type="button">Leave Station</button>
+                <div class="stations-list" id="stations-list">
+                    <div class="empty-stations">No stations live yet. Start a mood session to go on air.</div>
+                </div>
+            </section>
 
-                    <div class="screw tl"><div class="dot"></div></div>
-                    <div class="screw tr"><div class="dot"></div></div>
-                    <div class="screw bl"><div class="dot"></div></div>
-                    <div class="screw br"><div class="dot"></div></div>
+            <div class="cassette-wrapper">
+                <div class="cassette" id="cassette">
+                    <div class="cassette-face cassette-front">
+                        <div class="cassette-tab tab-top tab-left"></div>
+                        <div class="cassette-tab tab-top tab-right"></div>
+                        <div class="cassette-tab tab-side tab-left"></div>
+                        <div class="cassette-tab tab-side tab-right"></div>
 
-                    <div class="label-area">
-                        <img src="icon.png" class="hidden-preload" style="display:none;" alt="preload">
-                        <div class="brand">WAGBA MUSIC</div>
-                        <div class="sub-brand">Aesthetic Lo-Fi</div>
+                        <div class="screw tl"><div class="dot"></div></div>
+                        <div class="screw tr"><div class="dot"></div></div>
+                        <div class="screw bl"><div class="dot"></div></div>
+                        <div class="screw br"><div class="dot"></div></div>
 
-                        <div class="tape-window">
-                            <div class="magnetic-tape-bg"></div>
-                            <div class="magnetic-tape-bridge"></div>
-                            
-                            <div class="reel-container">
-                                <div class="reel reel-left">
-                                    <div class="hub"></div>
-                                    <div class="spokes">
-                                        <div class="spoke"></div><div class="spoke rot30"></div><div class="spoke rot60"></div><div class="spoke rot90"></div><div class="spoke rot120"></div><div class="spoke rot150"></div>
+                        <div class="label-area">
+                            <img src="icon.png" class="hidden-preload" style="display:none;" alt="preload">
+                            <div class="brand">WAGBA MUSIC</div>
+                            <div class="sub-brand">Aesthetic Lo-Fi</div>
+
+                            <div class="tape-window">
+                                <div class="magnetic-tape-bg"></div>
+                                <div class="magnetic-tape-bridge"></div>
+                                
+                                <div class="reel-container">
+                                    <div class="reel reel-left">
+                                        <div class="hub"></div>
+                                        <div class="spokes">
+                                            <div class="spoke"></div><div class="spoke rot30"></div><div class="spoke rot60"></div><div class="spoke rot90"></div><div class="spoke rot120"></div><div class="spoke rot150"></div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="reel reel-right">
-                                    <div class="hub"></div>
-                                    <div class="spokes">
-                                        <div class="spoke"></div><div class="spoke rot30"></div><div class="spoke rot60"></div><div class="spoke rot90"></div><div class="spoke rot120"></div><div class="spoke rot150"></div>
+                                    <div class="reel reel-right">
+                                        <div class="hub"></div>
+                                        <div class="spokes">
+                                            <div class="spoke"></div><div class="spoke rot30"></div><div class="spoke rot60"></div><div class="spoke rot90"></div><div class="spoke rot120"></div><div class="spoke rot150"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <form id="mood-form">
+                                <input type="text" id="mood-input" placeholder="Type your mood..." autocomplete="off" required>
+                            </form>
                         </div>
 
-                        <form id="mood-form">
-                            <input type="text" id="mood-input" placeholder="Type your mood..." autocomplete="off" required>
-                        </form>
+                        <div class="cassette-bottom">
+                            <div class="controls" id="player-controls">
+                                <button id="btn-prev" class="retro-btn" title="Previous Track">⏮</button>
+                                <button id="btn-play-pause" class="retro-btn" title="Play/Pause">⏸</button>
+                                <button id="btn-next" class="retro-btn" title="Next Track">⏭</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="cassette-bottom">
-                        <div class="controls" id="player-controls">
-                            <button id="btn-prev" class="retro-btn" title="Previous Track">⏮</button>
-                            <button id="btn-play-pause" class="retro-btn" title="Play/Pause">⏸</button>
-                            <button id="btn-next" class="retro-btn" title="Next Track">⏭</button>
+                    <div class="cassette-face cassette-back">
+                        <div class="cassette-tab tab-top tab-left"></div>
+                        <div class="cassette-tab tab-top tab-right"></div>
+                        <div class="cassette-tab tab-side tab-left"></div>
+                        <div class="cassette-tab tab-side tab-right"></div>
+
+                        <div class="screw tl"><div class="dot"></div></div>
+                        <div class="screw tr"><div class="dot"></div></div>
+                        <div class="screw bl"><div class="dot"></div></div>
+                        <div class="screw br"><div class="dot"></div></div>
+
+                        <div class="label-area back-label">
+                            <div id="youtube-embed"></div>
+                            <div class="playlist-container">
+                                <ul id="playlist"></ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="cassette-face cassette-back">
-                    <div class="cassette-tab tab-top tab-left"></div>
-                    <div class="cassette-tab tab-top tab-right"></div>
-                    <div class="cassette-tab tab-side tab-left"></div>
-                    <div class="cassette-tab tab-side tab-right"></div>
-
-                    <div class="screw tl"><div class="dot"></div></div>
-                    <div class="screw tr"><div class="dot"></div></div>
-                    <div class="screw bl"><div class="dot"></div></div>
-                    <div class="screw br"><div class="dot"></div></div>
-
-                    <div class="label-area back-label">
-                        <div id="youtube-embed"></div>
-                        <div class="playlist-container">
-                            <ul id="playlist"></ul>
-                        </div>
-                    </div>
-                </div>
+                <div id="loading" class="hidden">Winding tape...</div>
             </div>
-            <div id="loading" class="hidden">Winding tape...</div>
         </div>
     </div>
     <script src="https://www.youtube.com/iframe_api"></script>

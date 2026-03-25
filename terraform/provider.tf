@@ -6,14 +6,7 @@ terraform {
       version = "~> 5.0"
     }
   }
-
-  backend "s3" {
-    bucket = "mood-player-tf-bucket-700903221181"
-    key    = "terraform.tfstate"
-    region = "us-east-1"
-  }
 }
-
 provider "aws" {
   region = "us-east-1"
 }

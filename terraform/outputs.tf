@@ -8,11 +8,6 @@ output "recommend_endpoint" {
   value       = "${aws_apigatewayv2_stage.default.invoke_url}/recommend"
 }
 
-output "youtube_search_endpoint" {
-  description = "GET youtube search results from this URL"
-  value       = "${aws_apigatewayv2_stage.default.invoke_url}/youtube-search"
-}
-
 output "cloudfront_url" {
   description = "Your frontend URL"
   value       = "https://${aws_cloudfront_distribution.frontend.domain_name}"
@@ -42,4 +37,16 @@ output "public_subnet_id" {
 
 output "fargate_sg_id" {
   value = aws_security_group.fargate_sg.id
+}
+
+output "radio_ecr_url" {
+  value = aws_ecr_repository.radio_app.repository_url
+}
+
+output "radio_load_balancer_dns_name" {
+  value = aws_lb.radio.dns_name
+}
+
+output "radio_websocket_url" {
+  value = "wss://${aws_cloudfront_distribution.frontend.domain_name}/radio"
 }

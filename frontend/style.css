@@ -8,17 +8,164 @@ body, html {
     width: 100%;
     height: 100%;
     font-family: 'Quicksand', sans-serif;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .sky {
     position: relative;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background: #FFD4DF;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 32px;
+}
+
+.app-shell {
+    width: 100%;
+    max-width: 1320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+}
+
+.radio-panel {
+    width: 320px;
+    min-height: 420px;
+    background: rgba(255, 243, 230, 0.92);
+    border: 4px solid #C46779;
+    border-radius: 28px;
+    box-shadow: 0 18px 40px rgba(196, 103, 121, 0.18);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.radio-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.radio-kicker {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18rem;
+    color: #9D4357;
+    margin-bottom: 4px;
+}
+
+.radio-panel h2 {
+    font-size: 1.8rem;
+    color: #C46779;
+}
+
+.radio-pill {
+    border-radius: 999px;
+    border: 2px solid rgba(196, 103, 121, 0.25);
+    color: #9D4357;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.65);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.radio-pill.online {
+    background: rgba(196, 103, 121, 0.12);
+    border-color: rgba(196, 103, 121, 0.35);
+}
+
+.radio-pill.offline {
+    background: rgba(157, 67, 87, 0.08);
+}
+
+.radio-summary,
+.radio-status-text {
+    color: #9D4357;
+    line-height: 1.4;
+}
+
+.radio-leave {
+    border: none;
+    border-radius: 14px;
+    padding: 12px 16px;
+    background: #C46779;
+    color: #fff;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(196, 103, 121, 0.2);
+}
+
+.stations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 460px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.station-card,
+.empty-stations {
+    background: rgba(255, 255, 255, 0.72);
+    border: 2px solid rgba(196, 103, 121, 0.18);
+    border-radius: 20px;
+    padding: 16px;
+}
+
+.station-card.active-station {
+    border-color: rgba(157, 67, 87, 0.45);
+    box-shadow: inset 0 0 0 1px rgba(157, 67, 87, 0.2);
+}
+
+.station-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.station-card h3 {
+    color: #C46779;
+    font-size: 1.1rem;
+}
+
+.station-meta,
+.station-song,
+.station-empty {
+    color: #9D4357;
+    font-size: 0.95rem;
+    line-height: 1.45;
+}
+
+.station-song strong {
+    color: #C46779;
+}
+
+.station-actions {
+    margin-top: 12px;
+}
+
+.station-actions button {
+    border: none;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: #F295A7;
+    color: #fff;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.station-actions button:disabled {
+    cursor: default;
+    opacity: 0.7;
 }
 
 .clouds, .stars, .moon {
@@ -35,6 +182,7 @@ body, html {
     align-items: center;
     z-index: 10;
     perspective: 1500px;
+    flex: 1;
 }
 
 .cassette {
@@ -433,4 +581,35 @@ body, html {
     font-size: 0.85rem;
     color: #9D4357;
     margin-top: 5px;
+}
+
+@media (max-width: 1120px) {
+    .app-shell {
+        flex-direction: column;
+    }
+
+    .radio-panel {
+        width: min(100%, 760px);
+        min-height: auto;
+    }
+}
+
+@media (max-width: 720px) {
+    .sky {
+        padding: 18px;
+    }
+
+    .cassette {
+        width: 100%;
+        max-width: 540px;
+        height: 350px;
+    }
+
+    .radio-panel {
+        padding: 18px;
+    }
+
+    .playlist-container {
+        width: 92%;
+    }
 }
