@@ -25,9 +25,19 @@ function onYouTubeIframeAPIReady() {
             'controls': 1
         },
         events: {
+            'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
         }
     });
+}
+
+function onPlayerReady() {
+    const iframe = ytPlayer && ytPlayer.getIframe ? ytPlayer.getIframe() : null;
+    if (!iframe) {
+        return;
+    }
+    iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen');
+    iframe.setAttribute('allowfullscreen', 'true');
 }
 
 function onPlayerStateChange(event) {
