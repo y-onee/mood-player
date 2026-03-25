@@ -23,6 +23,10 @@ output "dynamodb_table_name" {
   value       = aws_dynamodb_table.songs.name
 }
 
+output "radio_instance_id" {
+  value = aws_instance.radio_server.id
+}
+
 output "ecs_cluster_name" {
   value = aws_ecs_cluster.main.name
 }
@@ -43,8 +47,8 @@ output "radio_ecr_url" {
   value = aws_ecr_repository.radio_app.repository_url
 }
 
-output "radio_load_balancer_dns_name" {
-  value = aws_lb.radio.dns_name
+output "radio_server_public_dns" {
+  value = aws_instance.radio_server.public_dns
 }
 
 output "radio_websocket_url" {

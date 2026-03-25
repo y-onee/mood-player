@@ -67,11 +67,11 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   origin {
-    domain_name = aws_lb.radio.dns_name
-    origin_id   = "ALB-radio"
+    domain_name = aws_instance.radio_server.public_dns
+    origin_id   = "EC2-radio"
 
     custom_origin_config {
-      http_port              = 80
+      http_port              = 8765
       https_port             = 443
       origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1.2"]
@@ -96,7 +96,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     path_pattern           = "/radio*"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "ALB-radio"
+    target_origin_id       = "EC2-radio"
     viewer_protocol_policy = "https-only"
     min_ttl                = 0
     default_ttl            = 0

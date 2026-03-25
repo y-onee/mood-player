@@ -132,8 +132,8 @@ resource "aws_route_table_association" "main" {
 }
 
 resource "aws_security_group" "fargate_sg" {
-  name        = "${var.project_name}-fargate-sg"
-  description = "Allow radio traffic from the load balancer to Fargate"
+  name        = "${var.project_name}-radio-ec2-sg"
+  description = "Allow radio traffic to EC2"
   vpc_id      = aws_vpc.main.id
 
   egress {
@@ -144,35 +144,10 @@ resource "aws_security_group" "fargate_sg" {
   }
 
   ingress {
-    description     = "Radio traffic from ALB"
-    from_port       = 8765
-    to_port         = 8765
-    protocol        = "tcp"
-    security_groups = [aws_security_group.radio_alb_sg.id]
-  }
-
-  tags = {
-    Project = var.project_name
-  }
-}
-
-resource "aws_security_group" "radio_alb_sg" {
-  name        = "${var.project_name}-radio-alb-sg"
-  description = "Allow inbound HTTP traffic to the radio load balancer"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    description = "HTTP"
-    from_port   = 80
-    to_port     = 80
+    description = "Radio WebSocket traffic"
+    from_port   = 8765
+    to_port     = 8765
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -228,117 +203,37 @@ resource "aws_ecs_task_definition" "youtube_prefetch" {
   }])
 }
 
-# ── CloudWatch Log Group for Radio ───────────────────────────────────────────
-resource "aws_cloudwatch_log_group" "radio_logs" {
-  name              = "/ecs/${var.project_name}-radio"
-  retention_in_days = 14
+# ── EC2 Radio Server ──────────────────────────────────────────────────────────
+data "aws_ami" "amazon_linux_2023" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023*-x86_64"]
+  }
+}
+
+resource "aws_instance" "radio_server" {
+  ami                         = data.aws_ami.amazon_linux_2023.id
+  instance_type               = "t3.micro"
+  subnet_id                   = aws_subnet.main.id
+  vpc_security_group_ids      = [aws_security_group.fargate_sg.id]
+  iam_instance_profile        = aws_iam_instance_profile.radio_profile.name
+  associate_public_ip_address = true
+
+  user_data = <<-EOF
+              #!/bin/bash
+              dnf update -y
+              dnf install -y docker
+              systemctl start docker
+              systemctl enable docker
+              aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${aws_ecr_repository.radio_app.repository_url}
+              docker pull ${aws_ecr_repository.radio_app.repository_url}:latest
+              docker run -d --restart always -p 8765:8765 ${aws_ecr_repository.radio_app.repository_url}:latest
+              EOF
 
   tags = {
-    Project = var.project_name
-  }
-}
-
-# ── Radio Task Definition ─────────────────────────────────────────────────────
-resource "aws_ecs_task_definition" "radio" {
-  family                   = "${var.project_name}-radio"
-  requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  cpu                      = "256"
-  memory                   = "512"
-  execution_role_arn       = aws_iam_role.ecs_task_role.arn
-  task_role_arn            = aws_iam_role.ecs_task_role.arn
-
-  container_definitions = jsonencode([{
-    name      = "radio-server"
-    image     = "${aws_ecr_repository.radio_app.repository_url}:latest"
-    essential = true
-
-    portMappings = [{
-      containerPort = 8765
-      protocol      = "tcp"
-    }]
-
-    logConfiguration = {
-      logDriver = "awslogs"
-      options = {
-        "awslogs-group"         = "/ecs/${var.project_name}-radio"
-        "awslogs-region"        = var.aws_region
-        "awslogs-stream-prefix" = "ecs"
-      }
-    }
-  }])
-}
-
-resource "aws_lb" "radio" {
-  name               = "${var.project_name}-radio-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.radio_alb_sg.id]
-  subnets            = [aws_subnet.main.id, aws_subnet.secondary.id]
-
-  tags = {
-    Project = var.project_name
-  }
-}
-
-resource "aws_lb_target_group" "radio" {
-  name        = "${var.project_name}-radio-tg"
-  port        = 8765
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = aws_vpc.main.id
-
-  health_check {
-    enabled             = true
-    path                = "/health"
-    protocol            = "HTTP"
-    matcher             = "200"
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    interval            = 30
-    timeout             = 5
-  }
-
-  tags = {
-    Project = var.project_name
-  }
-}
-
-resource "aws_lb_listener" "radio_http" {
-  load_balancer_arn = aws_lb.radio.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.radio.arn
-  }
-}
-
-# ── Radio ECS Service (persistent) ───────────────────────────────────────────
-resource "aws_ecs_service" "radio" {
-  name                              = "${var.project_name}-radio-service"
-  cluster                           = aws_ecs_cluster.main.id
-  task_definition                   = aws_ecs_task_definition.radio.arn
-  desired_count                     = 1
-  launch_type                       = "FARGATE"
-  health_check_grace_period_seconds = 60
-
-  network_configuration {
-    subnets          = [aws_subnet.main.id, aws_subnet.secondary.id]
-    security_groups  = [aws_security_group.fargate_sg.id]
-    assign_public_ip = true
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.radio.arn
-    container_name   = "radio-server"
-    container_port   = 8765
-  }
-
-  depends_on = [aws_lb_listener.radio_http]
-
-  tags = {
+    Name    = "${var.project_name}-radio-server"
     Project = var.project_name
   }
 }
