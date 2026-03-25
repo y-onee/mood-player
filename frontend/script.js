@@ -303,6 +303,12 @@ function handleRadioMessage(message) {
         leaveStationBtn.classList.add('hidden');
         setRadioStatus(currentStationId ? `Broadcasting as ${stationName}.` : 'You left the station.');
         renderStations();
+        
+        if (radioMode === 'solo' && ytPlayer && ytPlayer.pauseVideo) {
+            ytPlayer.pauseVideo();
+            currentPlaylist = [];
+            renderPlaylist();
+        }
         return;
     }
 
@@ -317,6 +323,12 @@ function handleRadioMessage(message) {
         leaveStationBtn.classList.add('hidden');
         setRadioStatus('That station went off air.');
         renderStations();
+
+        if (radioMode === 'solo' && ytPlayer && ytPlayer.pauseVideo) {
+            ytPlayer.pauseVideo();
+            currentPlaylist = [];
+            renderPlaylist();
+        }
     }
 }
 
