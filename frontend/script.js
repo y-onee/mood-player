@@ -2,6 +2,8 @@ const API_URL = "https://uqgibe2e90.execute-api.us-east-1.amazonaws.com/recommen
 const RADIO_URL = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/radio`;
 const RADIO_HANDLE_KEY = "armyRadioHandle";
 const RADIO_HANDLE = getStationName();
+const RADIO_SYNC_INTERVAL_MS = 1000;
+const RADIO_SYNC_DRIFT_SECONDS = 0.75;
 
 let ytPlayer;
 let currentPlaylist = [];
@@ -149,7 +151,7 @@ setInterval(() => {
     if (radioMode === 'broadcasting') {
         syncBroadcastState(false);
     }
-}, 5000);
+}, RADIO_SYNC_INTERVAL_MS);
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -486,11 +488,13 @@ function syncRemoteSong(song, forceReload) {
     cassetteElement.classList.add('flipped');
 
     const currentVideoId = ytPlayer.getVideoData ? ytPlayer.getVideoData().video_id : '';
-    const targetPosition = Number(song.position || 0);
+    const updatedAt = Number(song.updated_at || 0);
+    const elapsedSeconds = song.is_playing && updatedAt ? Math.max(0, (Date.now() - updatedAt) / 1000) : 0;
+    const targetPosition = Math.max(0, Number(song.position || 0) + elapsedSeconds);
 
     if (forceReload || currentVideoId !== song.video_id) {
         ytPlayer.loadVideoById(song.video_id, targetPosition);
-    } else if (ytPlayer.getCurrentTime && Math.abs(ytPlayer.getCurrentTime() - targetPosition) > 2) {
+    } else if (ytPlayer.getCurrentTime && Math.abs(ytPlayer.getCurrentTime() - targetPosition) > RADIO_SYNC_DRIFT_SECONDS) {
         ytPlayer.seekTo(targetPosition, true);
     }
 
