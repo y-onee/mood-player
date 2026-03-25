@@ -8,6 +8,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: mood-player-flask
+  RADIO_ECR_REPOSITORY: mood-player-radio
   TF_VAR_youtube_api_key: ${{ secrets.YOUTUBE_API_KEY }}
 
 jobs:
@@ -57,6 +58,15 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           # Push all tags for this repository
           docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
+
+      - name: Build, tag, and push radio image to Amazon ECR
+        working-directory: ./radio
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$RADIO_ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$RADIO_ECR_REPOSITORY:latest .
+          docker push -a $ECR_REGISTRY/$RADIO_ECR_REPOSITORY
 
       - name: Deploy Frontend to S3
         working-directory: ./terraform
