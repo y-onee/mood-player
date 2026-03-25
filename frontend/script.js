@@ -36,8 +36,9 @@ function onPlayerReady() {
     if (!iframe) {
         return;
     }
-    iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen');
+    iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture "none"');
     iframe.setAttribute('allowfullscreen', 'true');
+    iframe.setAttribute('disablepictureinpicture', 'true');
 }
 
 function onPlayerStateChange(event) {
